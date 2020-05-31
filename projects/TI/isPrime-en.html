@@ -36,7 +36,8 @@
 		</div>
 		<script>
 			function langseljp() {
-				document.open("isPrime-jp.html", "", "", true);
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
 			}
 		</script>
 	</body>
