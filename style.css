@@ -1,0 +1,44 @@
+.sidebar {
+	height: 100px;
+	width: 200px;
+	position: fixed;
+	z-index: 1;
+	top: 8px;
+	left: 0px;
+	background-color: #F8F8F8;
+	padding-top: 0px;
+	border: 1px solid grey;
+	border-left: 0px;
+}
+
+.sidebar a {
+	padding: 0px 0px 1px 0px;
+	text-decoration: none;
+	font-size: 12px;
+	color: blue;
+	display: block;
+}
+
+.sidebar a:hover {
+	text-decoration: underline;
+}
+
+.main {
+	margin-left: 200px;
+	border: 1px solid grey;
+}
+
+.mainbody {
+	margin-left: 5px;
+	font: 12px Arial;
+}
+
+.langbutton {
+	float: right;
+	display: block;
+	font-size: 12px;
+}
+
+.stdlist {
+	list-style-type: square;
+}
