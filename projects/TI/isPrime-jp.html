@@ -36,7 +36,8 @@
 		</div>
 		<script>
 			function langselen() {
-				document.open("isPrime-en.html", "", "", true);
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-jp.html", "-en.html"));
 			}
 		</script>
 	</body>
