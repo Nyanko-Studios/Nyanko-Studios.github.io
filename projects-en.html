@@ -1,0 +1,117 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="description content" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta lang="en" />
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+		
+		<style>
+			#toc {
+				width: 150px;
+				position: relative;
+				background-color: #F8F8F8;
+				padding-top: 0px;
+				border: 1px solid grey;
+			}
+			a#toc {
+				padding: 0px 0px 1px 0px;
+				text-decoration: none;
+				font-size: 12px;
+				color: blue;
+				display: block;
+			}
+			a:hover#toc {
+				text-decoration: underline;
+			}
+			.toclist {
+				list-style-type: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-en.html">About</a></li>
+				<li><a href="projects-en.html">Projects</a></li>
+				<li><a href="team-en.html">Team</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langseljp()"><ruby>日本語<rt hidden="hidden">にほんご</rt></ruby></button>
+			</div>
+			<section class="mainbody">
+				<h1 style="margin-bottom: 0px; font: 24px Arial;">Software</h1>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>Error:</b> JavaScript has been disabled.
+					</h1><hr />
+				</noscript>
+
+				<p spellcheck="true">This page contains a list of the various software that Nyanko Studios has created.</p>
+
+				<div id="toc">
+					<h4 style="text-align: center">Contents</h4>
+					<ul class="toclist">
+						<li>
+							<a href="#NES">1 NES</a>
+							<ul class="toclist">
+								<li><a href="#NES_games">1.1 Games</a></li>
+								<li hidden><a href="#NES_utility">1.2 Utility</a></li>
+							</ul>
+						</li>
+						<li><a href="#SNES">2 SNES</a></li>
+						<li>
+							<a href="#TI-8x">3 TI-8x Calculator</a>
+							<ul class="toclist">
+								<li><a href="#TI-8x_games">3.1 Games</a></li>
+								<li><a href="#TI-8x_utility">3.2 Utility</a></li>
+							</ul>
+						</li>
+						<li><a href="#Windows">4 Windows</a></li>
+					</ul>
+				</div>
+
+				<h3 id="NES">NES</h3>
+				<h4 id="NES_games">Games</h4>
+				<ul>
+					<li><a href="projects/TI/isPrime-en.html">Minesweeper</a></li>
+				</ul>
+
+				<h3 id="SNES">SNES</h3>
+				<ul></ul>
+
+				<h3 id="TI-8x">TI-8x Calculator</h3>
+				<h4 id="TI-8x_games">Games</h4>
+				<ul>
+					<li><a href="#">TI-PACMAN</a></li>
+				</ul>
+				<h4 id="TI-8x_utility">Utility</h4>
+				<ul>
+					<li><a href="#">Polynomial Division Calculator</a></li>
+					<li><a href="projects/TI/isPrime-en.html">isPrime</a></li>
+					<li><a href="#">Modulus Division (Remainder)</a></li>
+					<li><a href="#">Quick Set System Settings</a></li>
+				</ul>
+
+				<h3 id="Windows">Windows</h3>
+				<ul>
+					<li><a href="#">Polynomial Divider</a></li>
+					<li><a href="#">Metroid Password Parser</a></li>
+				</ul>
+
+			</section>
+		</div>
+		
+		<script>
+			function langseljp() {
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
+			}
+		</script>
+	</body>
+</html>
