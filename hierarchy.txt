@@ -1,0 +1,26 @@
+J:\WEBSITE
+|   team-en.html
+|   style.css
+|   projects-en.html
+|   about-jp.html
+|   404.html
+|   about-en.html
+|   index.html
+|   _TEMPLATE_PAGE.html
+|   hierarchy.txt
+|
++---projects
+|   +---NES
+|   +---TI
+|   |       isPrime-jp.html
+|   |       isPrime-en.html
+|   |
+|   +---Windows
+|   \---SNES
+\---.vs
+    |   ProjectSettings.json
+    |   slnx.sqlite
+    |   VSWorkspaceState.json
+    |
+    \---Website
+        \---v16
