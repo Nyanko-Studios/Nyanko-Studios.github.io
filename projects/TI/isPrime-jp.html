@@ -6,14 +6,14 @@
 		<meta name="description" content="description content" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta lang="ja" />
-		<link rel="stylesheet" type="text/css" href="../../style.css"/>
+		<link rel="stylesheet" type="text/css" href="../../style-jp.css"/>
 	</head>
 	<body>
 		<div class="sidebar">
 			<ul class="stdlist">
-				<li><a href="../../about-en.html">About</a></li>
-				<li><a href="../../projects-en.html">Projects</a></li>
-				<li><a href="../../team-en.html">Team</a></li>
+				<li><a href="../../about-jp.html">Nyanko Studiosについて</a></li>
+				<li><a href="../../projects-jp.html">プロジェクト</a></li>
+				<li><a href="../../team-jp.html">チーム</a></li>
 			</ul>
 		</div>
 		<div class="main">
@@ -29,14 +29,15 @@
 					</h1><hr />
 				</noscript>
 				<p>
-					プラットホーム: TI-8x Calculator<br />
+					プラットホーム: TI-84 Calculator<br />
 					バージョン： 1.1
 				</p>
 			</section>
 		</div>
 		<script>
-			function langselen() {
-				document.open("isPrime-en.html", "", "", true);
+			function langseljp(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
 			}
 		</script>
 	</body>

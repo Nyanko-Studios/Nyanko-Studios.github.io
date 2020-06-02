@@ -1,26 +1,34 @@
 J:\WEBSITE
-|   team-en.html
-|   style.css
-|   projects-en.html
 |   about-jp.html
-|   404.html
-|   about-en.html
+|   style-en.css
+|   projects-en.html
+|   style-jp.css
+|   team-en.html
 |   index.html
-|   _TEMPLATE_PAGE.html
 |   hierarchy.txt
+|   about-en.html
+|   404.html
 |
 +---projects
 |   +---NES
 |   +---TI
 |   |       isPrime-jp.html
 |   |       isPrime-en.html
+|   |       PACMAN-en.html
+|   |       TI-PACMAN-en.zip
+|   |       PACMAN-jp.html
 |   |
 |   +---Windows
 |   \---SNES
-\---.vs
-    |   ProjectSettings.json
-    |   slnx.sqlite
-    |   VSWorkspaceState.json
-    |
-    \---Website
-        \---v16
++---.vs
+|   |   ProjectSettings.json
+|   |   slnx.sqlite
+|   |   VSWorkspaceState.json
+|   |
+|   \---Website
+|       \---v16
+\---_template pages
+        MAIN_TEMPLATE_PAGE-jp.html
+        MAIN_TEMPLATE_PAGE-en.html
+        PROJECT_TEMPLATE_PAGE jp.html
+        PROJECT_TEMPLATE_PAGE-en.html
