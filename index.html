@@ -1,4 +1,43 @@
 <!--<meta http-equiv="refresh" content="0; URL='about-en.html'" />-->
 <script>
-	window.location.replace("about-en.html");
+	// go to page based on language setting.
+	// if language is not supported, display
+	//		error in native language
+	// if no error for language, display
+	//		error in English
+	switch(navigator.language.substr(0, 2)) {
+		case ("en"): {
+			window.location.replace("about-en.html");
+			break;
+		}
+		case ("ja"): {
+			window.location.replace("about-jp.html");
+			break;
+		}
+		case ("fr"): {
+			alert("Le français n'est pas pris en charge. Vous serez dirigé vers la page en anglais.");
+			window.location.replace("about-en.html");
+			break;
+		}
+		case ("it"): {
+			alert("L'italiano non è supportato. Verrai reindirizzato alla pagina inglese.");
+			window.location.replace("about-en.html");
+			break;
+		}
+		case ("de"): {
+			alert("Deutsch wird nicht unterstützt. Sie werden auf die englische Website weitergeleitet.");
+			window.location.replace("about-en.html");
+			break;
+		}
+		case ("es"): {
+			alert("El español no es compatible. Será dirigido a la página en inglés.");
+			window.location.replace("about-en.html");
+			break;
+		}
+		default: {
+			alert("Your language is not supported. You will be directed to the English page.");
+			window.location.replace("about-en.html");
+			break;
+		}
+	}
 </script>

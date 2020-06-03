@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="description content" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta lang="en" />
+		<link rel="stylesheet" type="text/css" href="style-jp.css"/>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-jp.html">Nyanko Studiosについて</a></li>
+				<li><a href="projects-jp.html">プロジェクト</a></li>
+				<li><a href="team-jp.html">チーム</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langselen()">English</button>
+			</div>
+			<section class="mainbody">
+				<h2 style="margin-bottom: 0px; font: 24px Arial;">PAGE NAME</h2>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>エラー：</b> JavaScriptが無効になっています
+					</h1><hr />
+				</noscript>
+
+				PAGE CONTENT
+
+			</section>
+		</div>
+		<script>
+			function langselen(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-jp.html", "-en.html"));
+			}
+		</script>
+	</body>
+</html>
+
