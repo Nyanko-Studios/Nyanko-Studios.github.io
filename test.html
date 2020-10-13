@@ -1,0 +1,1354 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="description content" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta lang="en" />
+		<link rel="stylesheet" type="text/css" href="style-en.css"/>
+		
+		<link href="prism.css" rel="stylesheet" type="text/css" />
+		<script src="prism.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-en.html">About</a></li>
+				<li><a href="projects-en.html">Projects</a></li>
+				<li><a href="team-en.html">Team</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langseljp()"><ruby>日本語<rt hidden="hidden">にほんご</rt></ruby></button>
+			</div>
+			<section class="mainbody">
+				<h2 style="margin-bottom: 0px; font: 24px Arial;">PAGE NAME</h2>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>Error:</b> JavaScript has been disabled.
+					</h1><hr />
+				</noscript>
+
+				<pre class="language-asm6502"><code>; iNES header
+	.db "N","E","S",$1A,$20,$20,$42,$00
+	.db $00,$00,$00,$00,$00,$00,$00,$00
+			
+.include "C:\Users\Jason\Desktop\Random\NES_DEV\asm_includes\NES_MEM_PORT.nasm"
+.include "C:\Users\Jason\Desktop\Random\NES_DEV\asm_includes\MMC3_MEM_PORT.nasm"
+;-------------------------------------------------------------------------------
+; Variables
+;-------------------------------------------------------------------------------
+
+; CRASH_HANDLER ID
+; $00 - unknown
+; $01 - NMI disabled
+; 	A: pPPUCTRL
+; $02 - PPU slave mode set
+; 	A: pPPUCTRL
+; $03 - drawing bad character
+;	A: char
+; $04 - bad PRG checksum
+; $05 - bad CHR checksum
+; $06 - emulator detected
+; $07 - bad CHR_CHECKSUM
+;	A: LO byte
+; $08 - bad CHR_CHECKSUM
+;	A: HI byte
+; $09 - bad header byte
+;	A: header sum
+
+; picture offset	$2083
+; text offset		$2284
+			
+			scanlinecount		= $D0
+			
+			panswapflag			= $E0
+			
+			numIRQ				= $E1
+			
+			CTRL1				= $E8
+			LASTCTRL1			= $E9
+			CTRL2				= $EA
+			LASTCTRL2			= $EB
+			
+			fadetimer			= $EC
+			unfadeflag			= $ED
+			
+			clearTextArea		= $EE
+			MISSED_FRAMES		= $EF
+			
+			animationFrame		= $F0
+			drawframe			= $F1
+			loadframe			= $F2
+			updateframe			= $F3
+			
+			textRow				= $F4
+			textPos				= $F5
+			loadtext			= $F6
+			updatetimer			= $F7			; text write delay
+			
+			GLOBALTIMERLO		= $F8
+			GLOBALTIMERMID		= $F9
+			GLOBALTIMERHI		= $FA
+			
+			PPUx				= $FB
+			PPUy				= $FC
+			pPPUCTRL			= $FD
+			pPPUMASK			= $FE
+			LOGIC_DONE			= $FF
+			
+			_DEBUG_				.equ 1
+;-------------------------------------------------------------------------------
+; Music ROM & APU Engine (banks 0, 1)
+;-------------------------------------------------------------------------------
+.base $8000
+	.incbin "C:\Users\Jason\Desktop\NES_ROM_covers\Music_ROM_Driver.bin"
+	.incbin "music.bin"
+	.pad $C000
+;-------------------------------------------------------------------------------
+; Dummy Banks
+;-------------------------------------------------------------------------------
+.rept $3C
+.base $8000
+.pad $A000
+.endr
+;-------------------------------------------------------------------------------
+; PPU Graphics Data
+;-------------------------------------------------------------------------------
+.base $C000
+; frame data includes buffer at end
+frame0:
+	.incbin "../0.nam", $0083, $01A0
+frame1:
+	.incbin "../1.nam", $0083, $01A0
+frame2:
+	.incbin "../2.nam", $0083, $01A0
+frame3:
+	.incbin "../3.nam", $0083, $01A0
+frame4:
+	.incbin "../4.nam", $0083, $01A0
+frame5:
+	.incbin "../5.nam", $0083, $01A0
+frame6:
+	.incbin "../6.nam", $0083, $01A0
+frame7:
+	.incbin "../7.nam", $0083, $01A0
+frame8:
+	.incbin "../8.nam", $0083, $01A0
+frame9:
+	.incbin "../9.nam", $0083, $01A0
+frameV:
+	.incbin "../vertical_pan/3.map", $0000, $160
+	.incbin "../vertical_pan/2.map", $0000, $160
+	.incbin "../vertical_pan/1.map", $0000, $160
+	.incbin "../vertical_pan/0.map", $0000, $160
+frametitle:
+	.incbin "../title.nam"
+
+.org $F000
+; initial palette
+palette:
+	.hex 0F 17 07 27 0F 30 10 00 0F 30 10 00 0F 30 10 00
+	.hex 0F 01 11 21 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+; address of img data
+imagelo:
+	.dl frame0, frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frameV, frametitle
+imagehi:
+	.dh frame0, frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frameV, frametitle
+imagebank:
+	.hex 04 08 0C 10 14 18 1C 20 24 28 30 34 38 3C 2C
+;offsetaddlo:
+;	.dl $0180, $0140, $0100, $00C0, $0080, $0040, $0000
+;offsetaddhi:
+;	.dh $0180, $0140, $0100, $00C0, $0080, $0040, $0000
+
+
+; loopct = $02, size = $D0, = $01A0
+; loopct = $03, size = $8A, = $019E
+; loopct = $04, size = $68, = $01A0
+; loopct = $05, size = $53, = $019F
+; loopct = $06, size = $45, = $019E
+; loopct = $07, size = $3B, = $019D
+; loopct = $08, size = $34, = $01A0
+
+loopct = $05
+size = $52
+
+; PPU story image offset
+offsetaddlo:
+	;.dl size * 3, size * 2, size, $0000
+	lpval = loopct
+	.rept loopct
+		lpval = lpval - 1
+		.dl size * lpval
+	.endr
+offsetaddhi:
+	;.dh size * 3, size * 2, size, $0000
+	lpval = loopct
+	.rept loopct
+		lpval = lpval - 1
+		.dh size * lpval
+	.endr
+	
+; PPU offset of each text row
+offsettextrowlo:
+	.dl $2284, $22C4, $2304
+offsettextrowhi:
+	.dh $2284, $22C4, $2304
+	
+; address of story text
+storylo:
+	.dl story0, story1, story2, story3, story4, story5, story6
+	.dl story7, story7, story7, story7, story7, story7, story7
+storyhi:
+	.dh story0, story1, story2, story3, story4, story5, story6
+	.dh story7, story7, story7, story7, story7, story7, story7
+	
+; length to add to base story address to get next row
+storyrowadd:
+	.db 20, 20, 21, 25, 0, 10, 23, 0
+	.hex 00 00 00 00 00 00 00 00
+	
+story0:
+	.db "Long ago, two races", 0
+	.db "ruled over Earth:", 0, 0, 0
+	.db "HUMANS and MONSTERS.", 0
+	
+story1:
+	.db "One day, war broke", 0, 0
+	.db "out between the two", 0
+	.db "races.", 0
+	
+story2:
+	.db "After a long battle,", 0
+	.db "the humans were", 0, 0, 0, 0, 0, 0
+	.db "victorious.", 0
+	
+story3:
+	.db "They sealed the monsters", 0
+	.db "underground with a magic", 0
+	.db "spell.", 0
+	
+story4:
+	.db "Many years later...", 0
+	
+story5:
+	.db "MT. EBOTT", 0
+	.db "201X", 0
+	
+story6:
+	.db "Legends say that those", 0
+	.db "who climb the mountain", 0
+	.db "never return.", 0
+	
+story7:
+	.db 0
+	
+fadepalette:
+	.hex 17 07 27 00 30
+	.hex 06 07 17 00 10
+	.hex 07 0F 06 00 00
+	.hex 0F 0F 07 00 2D
+	
+scrolltable0:
+	.hex 00
+scrolltable1:
+	.hex 00
+	
+.org $F200
+	;    0123456789ABCDEF
+	.db "This ROM was    "
+	.db "made by         "
+	.db "Haruki-nyan     "
+	.db "(Jason Cannon)of"
+	.db "Nyanko Studios. "
+	.db "Please do not   "
+	.db "modify or take  "
+	.db "credit for any  "
+	.db "part of this ROM"
+	.db "                "
+	.db "UNDERTALE is (C)"
+	.db "Toby Fox.       "
+	.db "                "
+	.db "Ƭݺ½À¼޵       "
+	.db "ʙ·°Ƭݠ        "
+;-------------------------------------------------------------------------------
+; RESET Vector
+;-------------------------------------------------------------------------------
+.org $F700
+RESET::
+			SEI												; disable interrupts
+            CLD												; disable decimal mode
+			STA MMC3_IRQ_DISABLE							; disable MMC3 interrupt
+			LDX #$FF
+			STX MMC3_MIRROR									; bit.0 = 1 :: horiz mirror
+			TXS
+			INX												; X = 0
+			TXA
+			STA MMC3_BANK_SEL								; set memory mapping
+			STA PPUCTRL										; disable NMI
+			STA PPUMASK										; disable rendering
+-:
+				BIT PPUSTATUS								; wait for 1st vBlank
+				;BPL -
+-:															; clear system RAM
+				LDA #$00
+				STA $00,X									; *($00 + X) = A
+				STA $0100,X
+				STA $0200,X
+				LDA #$FE									; move sprites off-screen
+				STA $0300,X
+				INX											; X++
+				BNE -
+			STX APUCTRL
+			
+			LDX #$10										; 16 consecutive bytes with same value ?
+			LDA $0400
+-:
+				CMP $0400,X
+				BNE +										; byte not same, exit
+				DEX
+				BNE -										; not 16 bytes yet, loop
+					;BRK #$06								; 16 consecutive same byte: might be emulator
++:								; disabled for testing
+			
+-:			
+			BIT PPUSTATUS									; wait for 2nd vBlank
+            ;BPL -
+			
+			BIT PPUSTATUS									; read PPU status to reset high/low latch
+			LDA #$3F
+			STA PPUADDR										; write high byte of $3F00 address
+			LDA #$00
+			STA PPUADDR										; write low byte of $3F00 address
+			TAX												; X = #$00
+-:
+				LDA palette,X								; load palette byte
+				STA PPUDATA									; write to PPU
+				INX											; set index to next byte
+				CPX #$20									; Z_FLAG = (X == #$20) ? true : false
+				BNE -										; if(!Z_FLAG) goto -
+			
+			BIT PPUSTATUS									; clear all nametables
+			LDA #$20
+			STA PPUADDR
+			LDA #$00
+			STA PPUADDR
+			TAX
+			TAY
+-:
+					STA PPUDATA
+					INY
+					BNE -
+				INX
+				CPX #$10
+				BNE -
+			
+			BIT PPUSTATUS									; init nametable attributes @ $23C0 - $23FF
+			LDA #$23
+			STA PPUADDR
+			LDA #$C0
+			STA PPUADDR
+			LDA #$00										; set attributes for image area
+			TAX
+			TAY
+-:
+				STA PPUDATA
+				INX
+				CPX #$28
+				BNE -
+			LDA #%01010101									; set attributes for text area
+-:
+				STA PPUDATA
+				INY
+				CPY #$18
+				BNE -
+			
+			LDX #$02										; 2nd 4KiB CHR
+			LDA #$FF
+			STX MMC3_BANK_SEL
+			;STA MMC3_BANK_DATA
+			INX
+			STX MMC3_BANK_SEL
+			;STA MMC3_BANK_DATA
+			INX
+			STX MMC3_BANK_SEL
+			;STA MMC3_BANK_DATA
+			INX
+			STX MMC3_BANK_SEL
+			;STA MMC3_BANK_DATA
+			
+			LDY #$00										; set music engine / data bank
+			INX
+			STX MMC3_BANK_SEL
+			STY MMC3_BANK_DATA
+			INX
+			INY
+			STX MMC3_BANK_SEL
+			STY MMC3_BANK_DATA
+			
+			LDA #$90
+			STA scanlinecount
+			
+			LDA #$F7
+			STA $50
+			
+			LDA #$6F
+			STA $51
+			
+			; replace with checksum when prgm finished?
+		.if _DEBUG_
+			LDX #$20
+-: 
+					BIT PPUSTATUS							; wait for a few frames for TV to realize it's reciving input
+					;BPL -
+				DEX
+				;BNE -
+		.else
+			JSR PRG_CHECKSUM
+			JSR CHR_CHECKSUM
+			JSR HEADER_CHECK
+		.endif
+			
+            LDA #$0F										; APU init
+            STA SND_CHN
+            LDA #$0A
+            STA DMC_FREQ
+			
+			LDA #%10001000									; enable NMI
+			STA pPPUCTRL									; BKGD & obj need to use different
+			STA PPUCTRL										;	tables for MMC3 IRQ
+			
+			LDA #%00011110									; enable rendering
+			STA pPPUMASK
+            
+			;LDA #loopct									; init draw frame0
+			;STA loadframe
+			;LDA #$01
+			
+			LDA #loopct										; draw frame0 & text
+			STA loadframe
+			
+			LDA #20 - 3
+			STA fadetimer
+			LDA #$01
+			STA unfadeflag
+			
+			;STA loadtext
+			;STA updatetimer
+			
+			LDA #"N"										; write string "Nyanko" to RAM @ $80 - $85
+			STA $80
+			LDA #"y"
+			STA $81
+			LDA #"a"
+			STA $82
+			LDA #"n"
+			STA $83
+			LDA #"k"
+			STA $84
+			LDA #"o"
+			STA $85
+			
+			LDA #$00										; reset registers (expected for JSR $8008)
+            TAX
+			TAY
+			
+            JSR $8008										; call APU engine init ?
+			
+			CLI												; enable IRQ
+			
+			
+;-------------------------------------------------------------------------------
+; Main Script [Excludes APU Engine]
+;-------------------------------------------------------------------------------
+MAIN::
+			
+			LDA CTRL1										; read controller input
+			STA LASTCTRL1
+			LDA CTRL2
+			STA LASTCTRL2
+			.include "C:\Users\Jason\Desktop\Random\NES_DEV\asm_includes\functions\READCTRL.nasm"
+			
+			; once PPUy reaches position, INC animationFrame
+			
+			; test
+			LDA updateframe
+			ORA loadframe
+			ORA loadtext
+			ORA fadetimer
+			BNE +
+				LDA CTRL1
+				EOR #BUTTON_A | #BUTTON_B
+				BEQ ++
+					LDA CTRL1
+					AND #BUTTON_A
+					BEQ ++
+						LDA LASTCTRL1
+						AND #BUTTON_A
+						BNE ++
+							;INC updateframe
+							LDA #$18 + 1
+							STA fadetimer
+++:
+					LDA CTRL1
+					AND #BUTTON_B
+					BEQ +
+						LDA LASTCTRL1
+						AND #BUTTON_B
+						BNE +
+							LDA textRow
+							CMP #$03
+							BEQ +
+								INC loadtext
++:
+			LDA CTRL1
+			AND #BUTTON_UP
+			BNE +
+				DEC PPUy
++:
+			LDA CTRL1
+			AND #BUTTON_DOWN
+			BNE +
+				INC PPUy
++:
+			LDA CTRL1
+			AND #BUTTON_SEL; testing for animationFrame $0A
+			BNE +
+				LDA LASTCTRL1
+				AND #BUTTON_SEL
+				BEQ +
+					LDA #$20			; PPUADDR
+					STA $61
+					LDA #$80
+					STA $60
+					
+					LDA #>(frameV)		; CPUADDR
+					STA $63
+					LDA #&lt;(frameV)
+					STA $62
++:
+			LDA CTRL1
+			AND #BUTTON_START
+			BNE +
+				LDA LASTCTRL1
+				AND #BUTTON_START
+				BEQ +
+					LDA $60
+					STA $0100
+					LDA $61
+					STA $0101
+					LDA #$20
+					STA $0102
+					LDY #$00
+-:
+						LDA ($62),Y
+						STA $0103,Y
+						INY
+						CPY #$20
+						BNE -
+					LDA #$01
+					STA drawframe
+					
+					LDA $60
+					CLC
+					ADC #$20
+					STA $60
+					
+					LDA $61
+					ADC #$00
+					STA $61
+					
+					LDA $62
+					CLC
+					ADC #$20
+					STA $62
+					
+					LDA $63
+					ADC #$00
+					STA $63
+					
+					LDA $61
+					CMP #$23
+					BNE ++
+						LDA $60
+						CMP #$C0
+						BNE ++
+							LDA #$28
+							STA $61
+							LDA #$00
+							STA $60
+++:
++:
+			
+			
+			; test
+			
+			
+			
+			INC GLOBALTIMERLO
+			BNE #$06
+				INC GLOBALTIMERMID
+				BNE #$02
+					INC GLOBALTIMERHI
+			
+			
+			LDA pPPUCTRL									; load to display in CRASH_HANDLER
+			BIT pPPUCTRL
+			BVC #$02										; NMI disabled
+				BRK #$01
+			BMI #$02										; slave mode set
+				BRK #$02
+			
+			
+			LDA updateframe
+			BEQ +
+				INC animationFrame
+				LDA animationFrame
+				CMP #$0A
+				BCC ++						; loop story for debug
+					;LDA #$00
+					;STA animationFrame
+					
+					;JMP ($FFFC)
+					;NOP
+++:
+				LDA #$00
+				STA PPUy
+				LDA #loopct
+				STA loadframe
+				DEC updateframe
++:
+			
+			JSR FADEFRAME
+			JSR CLEARTEXT
+			JSR LOADIMGGRAPHICS
+			JSR LOADTEXTSTRING
+++:
+			
+			JSR HEADER_CHECK
+			
+			INC LOGIC_DONE
+				LDA LOGIC_DONE
+				BNE #$FC
+			JMP MAIN
+;-------------------------------------------------------------------------------
+; NMI Vector
+;-------------------------------------------------------------------------------
+NMI::
+			PHA
+			LDA LOGIC_DONE
+			BNE +
+				INC MISSED_FRAMES
+				PLA
+				RTI
++:
+			TXA												; PHX
+			PHA
+			TYA												; PHY
+			PHA
+			
+			LDA #$1F
+			STA MMC3_IRQ_DISABLE
+			STA MMC3_IRQ_LATCH								; set latch value
+			STA MMC3_IRQ_RELOAD								; reload IRQ
+			STA MMC3_IRQ_ENABLE								; enable IRQ
+			
+			; picture drawing code
+			LDA drawframe
+			BEQ +
+				BIT PPUSTATUS								; read PPU buffer address from
+				LDA $0101									;	$0100 - $0101
+				STA PPUADDR
+				LDA $0100
+				STA PPUADDR
+				LDX #$00									; count from 0 to data @ $0102
+-:
+					LDA $0103,X								; write buffer data to PPU
+					STA PPUDATA
+					INX
+					CPX $0102								; repeat while X != $0102
+					BNE -
+				DEC drawframe
++:
+			LDA pPPUCTRL									; write PPU register buffer
+			STA PPUCTRL
+			LDA pPPUMASK
+			STA PPUMASK
+			
+			BIT PPUSTATUS
+			LDA #$00										; render sprites
+			STA OAMADDR
+			LDA #$03
+			STA OAMDMA
+			
+			LDA PPUx
+			STA PPUSCROLL
+			LDA PPUy
+			STA PPUSCROLL
+			
+			LDY #$00										; render blank before scanline $20
+			STY numIRQ										; reset IRQ count for this frame
+			STY MMC3_BANK_SEL
+			LDX #$FF
+			STX MMC3_BANK_DATA
+			INY
+			STY MMC3_BANK_SEL
+			STX MMC3_BANK_DATA
+			
+			DEC LOGIC_DONE
+			
+			JSR $800B										; call APU engine?
+			
+			PLA
+			TAY												; PLY
+			PLA
+			TAX												; PLX
+			PLA
+			
+			RTI
+;-------------------------------------------------------------------------------
+; IRQ Vector
+;-------------------------------------------------------------------------------	
+IRQ::
+			STA $8E											; save accumulator
+			PLA
+			STA $8F											; save status register
+			AND #$10										; BRK or IRQ ?
+			BNE +
+				LDA $8F										; restore status register
+				PHA
+				LDA $8E										; restore accumulator
+				JMP MMC3_IRQ								; IRQ called
++:
+			LDA $8F											; restore status register
+			PHA
+			LDA $8E											; restore accumulator
+			;.incbin "CRASH_HANDLER.nes"
+			;.include "CRASH_HANDLER3.nasm"
+			.include "C:\Users\Jason\Desktop\Random\NES_DEV\asm_includes\CRASH_HANDLER3.nasm"
+			.include "extcrash.nasm"
+			
+			LDX #$00
+			STX PPUCTRL
+			STX PPUSCROLL									; set scroll x = 0, y = 0
+			STX PPUSCROLL
+			
+			STX SQ1_LO										; silence pulse channel 1
+			STX SQ1_HI
+			STX SQ1_SWEEP
+			STX SQ1_VOL
+			
+			STX TRI_HI										; silence triangle channel
+			STX TRI_LO
+			STX TRI_LINEAR
+			
+			STX MMC3_BANK_SEL								; set bank PPU bank to text bank
+			LDA #$02
+			STA MMC3_BANK_DATA
+			INX
+			STX MMC3_BANK_SEL
+			STA MMC3_BANK_DATA
+			
+			LDA #%00001000
+			STA PPUMASK
+			
+			JMP $
+			
+MMC3_IRQ::
+			
+			PHA
+			TXA												; PHX
+			PHA
+			TYA												; PHY
+			PHA
+			
+			STA MMC3_IRQ_DISABLE							; acknowledge interrupt
+			
+			LDA numIRQ
+			CMP #$00
+			BNE #$03
+				JMP @case0
+			CMP #$01
+			BNE #$03
+				JMP @case1
+			CMP #$02
+			BNE #$03
+				JMP @case2
+			BRK #$10
+@case0:
+				LDY #$00
+				STY MMC3_BANK_SEL							; update CHR banks
+				LDX animationFrame
+				LDA imagebank,X
+				STA MMC3_BANK_DATA
+				INY
+				STY MMC3_BANK_SEL
+				CLC
+				ADC #$02
+				STA MMC3_BANK_DATA
+				
+				LDA animationFrame
+				CMP #$0A
+				BCC @l0
+					;LDA #$68									; change to be based of PPUy
+					;LDA PPUy
+					;CLC
+					;SBC $51
+					BIT PPUSTATUS
+					LDA PPUx
+					STA PPUSCROLL
+					LDA $52
+					STA PPUSCROLL
+					
+					LDA $51
+					SEC
+					SBC PPUy
+					
+					JMP @l1
+@l0:
+					LDA #$68
+@l1:
+				STA $53
+				STA MMC3_IRQ_LATCH
+				STA MMC3_IRQ_RELOAD
+				STA MMC3_IRQ_ENABLE
+				JMP @endcase
+@case1:
+				LDA animationFrame
+				CMP #$09
+				BCS @l2
+					LDX #$00
+					STX MMC3_BANK_SEL						; sel CHR bank 0
+					LDA unfadeflag							; if unfadeflag, swap to empty
+					BEQ #$01								; 	bank to hide text
+						DEX
+					STX MMC3_BANK_DATA						; text bank
+					
+					JMP @endcase
+@l2:
+				; swap bank to animationFrame - 1 ?
+				LDY #$00
+				STY MMC3_BANK_SEL							; update CHR banks
+				LDX animationFrame
+				DEX
+				LDA imagebank,X
+				STA MMC3_BANK_DATA
+				INY
+				STY MMC3_BANK_SEL
+				CLC
+				ADC #$02
+				STA MMC3_BANK_DATA
+				
+				LDA $50		; test
+				CLC
+				ADC PPUy
+				CMP $50
+				BCC @l3
+					SEC
+					SBC $50
+@l3:
+				STA $52
+				STA MMC3_IRQ_LATCH
+				STA MMC3_IRQ_RELOAD
+				STA MMC3_IRQ_ENABLE
+				JMP @endcase
+@case2:
+				LDY #$00
+				STY MMC3_BANK_SEL							; update CHR banks
+				LDA #$FF
+				STA MMC3_BANK_DATA							; empty bank
+				INY
+				STY MMC3_BANK_SEL
+				STA MMC3_BANK_DATA
+				
+@endcase:
+			
+			INC numIRQ
+			
+			PLA												; PLY
+			TAY
+			PLA												; PLX
+			TAX
+			PLA
+			
+			RTI
+			
+LOADIMGGRAPHICS::
+			LDX loadframe
+			BNE #$03
+				JMP +
+				
+				LDA #$83
+				STA $0100
+				LDA #$20
+				STA $0101
+				
+				LDA #size
+				STA $0102
+				
+				; LDX drawframe + 1
+				LDA offsetaddlo - 1,X
+				CLC
+				ADC $0100
+				STA $0100
+				
+				LDA offsetaddhi - 1,X
+				ADC $0101
+				STA $0101
+				
+				LDX animationFrame
+				LDA imagelo,X
+				STA $10
+				LDA imagehi,X
+				STA $11
+				
+				LDX loadframe
+				LDA offsetaddlo - 1,X
+				CLC
+				ADC $10
+				STA $10
+				
+				LDA offsetaddhi - 1,X
+				ADC $11
+				STA $11
+				
+				LDY #$00
+-:
+					LDA ($10),Y
+					STA $0103,Y
+					INY
+					CPY #size
+					BNE -
+				INC drawframe
+				DEC loadframe
+				
+				
+				; prep text drawing
+				LDX #$00
+				STX textPos
+				STX textRow
+				
+				LDX #$03
+				STX clearTextArea
+				
++:
+			RTS
+
+
+LOADTEXTSTRING::
+			LDA loadtext
+			BNE #$03
+				JMP +
+				
+				LDA updatetimer			; wait for timer
+				BEQ #$03
+					JMP dectimertextstr
+				
+				LDY animationFrame
+				LDA storylo,Y
+				STA $10
+				LDA storyhi,Y
+				STA $11
+				
+				LDX textRow
+				BEQ ++
+					LDA storyrowadd,Y
+					STA $12
+-:
+						LDA $12
+						CLC
+						ADC $10
+						STA $10
+						
+						LDA #$00
+						ADC $11
+						STA $11
+						
+						DEX
+						BNE -
+++:
+				
+				; set timer
+				
+				LDX textRow
+				
+				LDY textPos
+				LDA ($10),Y
+				STA $0103
+				BNE ++
+					STA updatetimer
+					CPX #$02
+					BNE #$02
+						DEC loadtext
+						;DEC drawframe
+						; set long timer
+					INC textRow
+					LDA #$FF
+					STA textPos
+++:
+				LDA #$01				; buffer length
+				STA $0102
+				
+				;LDX textRow
+				
+				LDA offsettextrowlo,X
+				STA $0100
+				
+				LDA offsettextrowhi,X
+				STA $0101
+				
+				; special frames 
+				LDA animationFrame
+				CMP #$04
+				BNE ++
+					LDA #$0F
+					CMP textPos
+					;BCS #$04			; wait longer if at ellipsis
+					;	LDA #$28		; temp delay time for timer until actual delay time found
+					;	STA updatetimer
+					LDX textRow								; if passed row 0 & on animationFrame 4
+					BEQ ++									; end drawing text
+						DEC loadtext
+						LDA #$03
+						STA textRow
+++:
+				;LDA animationFrame
+				CMP #$05
+				BNE ++
+					LDA #$22
+					STA $0101
+					LDX textRow
+					BEQ @case0								; row 0
+					CPX #$01
+					BEQ @case1								; row 1
+					BNE @case2								; row 2
+@case0:
+						LDA #$8B
+						STA $0100
+						BNE ++
+@case1:
+						LDA #$CE
+						STA $0100
+						BNE ++
+@case2:
+						DEC loadtext							; don't draw
+						LDA #$03
+						STA textRow
+++:
+				
+				LDA $0100
+				CLC
+				ADC textPos
+				STA $0100
+				
+				LDX animationFrame
+				
+				LDA $0103		; get char to write
+				BEQ @case0		; NULL "\0"
+				CMP #$20
+				BEQ @case1		; space " "
+				CMP #$2C
+				BEQ @case2		; comma ","
+				CMP #$2E
+				BEQ @case3		; period "."
+				CMP #$3A
+				BEQ @case4		; colon ":"
+				CMP #$7A
+				BCC @case5		; any char < #$7A "z"
+				BRK #$03
+@case0:
+					LDA #$01			; #$00
+					BNE ++
+@case1:
+					LDA #$02			; " "
+					BNE ++
+@case2:
+					LDA #$10			; ","
+					BNE ++
+@case3:
+					LDA #$20			; "."
+					CPX #$05			; if animationFrame = 5, don't wait longer
+						BEQ @case5
+					BNE ++
+@case4:
+					LDA #$10			; ":"
+					BNE ++
+@case5:
+					LDA #$02			; other
+					BNE ++
+++:
+				STA updatetimer			; delay values not final
+				
+				INC textPos
+				INC drawframe
+				CLC
+				BCC +
+				;INC loadframe
+dectimertextstr:
+				DEC updatetimer
++:
+				
+			RTS
+			
+CLEARTEXT::
+			LDX clearTextArea
+			BEQ +
+				LDA offsettextrowlo - 1,X
+				STA $0100
+				LDA offsettextrowhi - 1,X
+				STA $0101
+				LDX #$20
+				STX $0102
+				LDA #$00
+-:
+					STA $0103 - 1,X
+					DEX
+					BNE -
+				INC drawframe
+				DEC clearTextArea
++:
+			RTS
+			
+FADEFRAME::
+			LDA fadetimer
+			BNE #$01
+				RTS
+			
+			LDA unfadeflag
+			BNE +
+				DEC fadetimer
+				BNE ++
+				BEQ ++
++:
+				INC fadetimer
+++:
+			
+			LDA fadetimer
+			CMP #25
+			BEQ @case6
+			CMP #20
+			BEQ @case1
+			;CMP #$28
+			;BEQ @case0
+			CMP #15
+			BEQ @case2
+			;CMP #$18
+			;BEQ @case0
+			CMP #10
+			BEQ @case3
+			CMP #5
+			BEQ @case4
+			CMP #$00
+			BEQ @case5
+			BNE @default
+@case6:
+				LDA unfadeflag
+				BEQ @case0
+					LDA #$00
+					STA fadetimer
+					INC loadtext
+					DEC unfadeflag
+					LDX #$00					; fadepalette index
+					BEQ @wrpal					; restore palette
+				
+@case0:
+				LDA pPPUMASK					; set color emphasis
+				;EOR #$E0						; EOR for testing
+				BNE @default					; just RTS instead ?
+				STA pPPUMASK
+				BRK #$82
+@case1:
+				LDX #5							; index into fadepalette
+				BNE @wrpal
+@case2:
+				LDX #10
+				BNE @wrpal
+@case3:
+				LDX #15
+				; BNE @wrpal
+@wrpal:
+				LDA pPPUMASK					; clear color emphasis
+				AND #$1F
+				STA pPPUMASK
+				LDA #$01
+				STA $0100						; set write address
+				LDA #$3F
+				STA $0101
+				LDA #$05						; set buffer length
+				STA $0102
+				LDA fadepalette,X				; write palette to buffer
+				STA $0103
+				INX
+				LDA fadepalette,X
+				STA $0104
+				INX
+				LDA fadepalette,X
+				STA $0105
+				INX
+				LDA fadepalette,X
+				STA $0106
+				INX
+				LDA fadepalette,X
+				STA $0107
+				INC drawframe
+				BNE @default					; just RTS instead ?
+				BRK #$80
+@case4:
+				LDA unfadeflag
+				BNE @enbkgd
+					LDA pPPUMASK				; turn off the background
+					AND #%11110111
+					STA pPPUMASK
+					BNE @default				; just RTS instead ?
+@enbkgd:
+					LDA pPPUMASK				; enable background
+					ORA #$08
+					STA pPPUMASK
+					BNE @default
+				BRK #$81
+@case5:
+				INC updateframe					; render next story frame
+				INC fadetimer					; make not 0 so unfade will occur
+				INC unfadeflag					; count up
+@default:
+			
+			RTS
+			
+PRG_CHECKSUM::
+			RTS
+			
+CHR_CHECKSUM::
+			LDA #$00
+			STA $20			; sum LO
+			STA $21			; sum HI
+			TAX				; address LO
+			STA $23			; address HI
+			TAY				; bank
+			
+-:
+					;LDA #$00			; slot 0
+					STX MMC3_BANK_SEL
+					LDA $24				; select bank
+					STY MMC3_BANK_DATA
+					BIT PPUSTATUS
+					;LDA #$00			; set address
+					STX PPUADDR
+					STX PPUADDR
+					LDA PPUDATA			; clear PPU buffer
+					
+--:
+					LDA PPUDATA			; 16-bit add
+					CLC
+					ADC $20
+					STA $20
+					
+					LDA #$00
+					ADC $21
+					STA $21
+					
+					INX
+					BNE #$02
+						INC $23
+					
+					LDA $23
+					CMP #$08
+					BNE --
+				
+				TXA			; A = $00
+				STA $23
+				
+				INY
+				INY
+				CPY #$44			; don't need to waste time checking all empty banks
+				BNE -
+			
+			LDA $20
+			CMP $FFF2
+			BEQ #$02
+				BRK #$07
+			LDA $21
+			CMP $FFF3
+			BEQ #$02
+				BRK #$08
+			
+			RTS
+			
+HEADER_CHECK::
+			LDA #$00
+			TAX
+-:
+				CLC
+				ADC $FFF2,X
+				STA $0300,X
+				INX
+				CPX #$08
+				BNE -
+			TAY
+			CPY #$00
+			BEQ #$02
+				BRK #$09
+			
+			RTS
+			
+;-------------------------------------------------------------------------------
+; Hardware Vectors
+;-------------------------------------------------------------------------------
+.include "C:\Users\Jason\Desktop\Random\NES_DEV\asm_includes\functions\new_NyankoHeader.nasm"
+	;             name                prg    chr    size type ver  byte yr    m   d   hr  len
+	_NyankoHeader "UNDERTALE SONG 0", $0000, $F928, $54, $06, $00, $E7, 2020, 06, 27, 01, 15
+.org $FFFA
+	.dw NMI
+	.dw RESET
+	.dw IRQ
+;-------------------------------------------------------------------------------
+; PPU ROMs
+;-------------------------------------------------------------------------------
+.base $0000
+	.incbin "../_font.chr"								; banks $00 - $01
+	.incbin "CRASH_HANDLER.chr"							; bank $02
+	.incbin "CRASH_HANDLER.chr"							; bank $03
+	
+	.incbin "../0.chr"									; banks $04 - $07
+	.incbin "../1.chr"									; banks $08 - $0B
+	
+	.incbin "../2.chr"									; banks $0C - $0F
+	.incbin "../3.chr"									; banks $10 - $13
+	
+	.incbin "../4.chr"									; banks $14 - $17
+	.incbin "../5.chr"									; banks $18 - $1B
+	
+	.incbin "../6.chr"									; banks $1C - $1F
+	.incbin "../7.chr"									; banks $20 - $23
+	
+	.incbin "../8.chr"									; banks $24 - $27
+	.incbin "../9.chr"									; banks $28 - $2B
+	
+	.incbin "../title.chr"								; banks $2C - $2F
+	
+	.incbin "../vertical_pan/0.chr"
+	.incbin "../vertical_pan/1.chr"
+	.incbin "../vertical_pan/2.chr"
+	.incbin "../vertical_pan/3.chr"
+	
+	.incbin "NYANKO_STUDIOS_CHR_CHECKSUM.chr"
+	
+	.pad $40000, $00
+	
+
+				</code></pre>
+
+			</section>
+		</div>
+		<script>
+			function langseljp(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
+			}
+		</script>
+	</body>
+</html>
+

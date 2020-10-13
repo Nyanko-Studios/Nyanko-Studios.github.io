@@ -1,0 +1,592 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="description content" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta lang="en" />
+		<link rel="stylesheet" type="text/css" href="style-en.css"/>
+		
+		<link href="prism.css" rel="stylesheet" type="text/css" />
+		<script src="prism.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-en.html">About</a></li>
+				<li><a href="projects-en.html">Projects</a></li>
+				<li><a href="team-en.html">Team</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langseljp()"><ruby>日本語<rt hidden="hidden">にほんご</rt></ruby></button>
+			</div>
+			<section class="mainbody">
+				<h2 style="margin-bottom: 0px; font: 24px Arial;">PAGE NAME</h2>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>Error:</b> JavaScript has been disabled.
+					</h1><hr />
+				</noscript>
+
+				<pre class="language-c"><code>#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include "..\__scripts\typedef.h"
+
+#include "mappers.h"
+
+#define KiB * 1024
+#define range(x, min, max) x >= min && x <= max
+
+
+FILE* romfile;
+byte* ROM;
+uint32 filesize;
+uint32 prgsize;
+uint32 headerstart;
+byte isNyankoHeader;
+uint32 temp;
+
+uint16 checksum16;
+uint16 checksumfull;
+byte headerbyte;
+
+int main(int argc, char** argv){
+	
+	// make sure file input
+	if(argc < 2){
+		std::puts("No file input.\a");
+		goto exit;
+	}
+
+	// open file
+	romfile = std::fopen(argv[1], "rb");
+
+	// return if open fail
+	if(romfile == NULL){
+		std::printf("Unable to open file \"%s\"\n\a", argv[1]);
+		goto exit;
+	}
+
+	// if file open success, print file name
+	///std::printf("%s\n", argv[1]);
+
+	// get file size
+	std::fseek(romfile, 0, SEEK_END);
+	filesize = std::ftell(romfile);
+
+	// allocate memory
+	ROM = (byte*)std::malloc(filesize);
+
+	// return if allocation fail
+	if(ROM == NULL){
+		std::puts("Memory allocation failed.\a");
+		goto exit;
+	}
+
+	// read file
+	std::rewind(romfile);
+	std::fread(ROM, 1, filesize, romfile);
+
+	// close file
+	std::fclose(romfile);
+
+	// don't bother checking file if < 16 KiB
+	if(filesize < 16 KiB){
+		std::puts("File is too small.\a");
+		goto exit;
+	}
+
+	// check if iNES header exists
+	if(std::memcmp(ROM, "NES\x1A", 4)){
+		std::puts("iNES header not found.");
+
+		// no iNES header to offset
+		headerstart = 0;
+
+		// iNES header not found, use file size to determine ROM size
+		switch(filesize){
+			case(16 KiB):
+			case(32 KiB):
+			case(64 KiB):
+			case(128 KiB):
+			case(256 KiB):
+			case(512 KiB):{
+				// 0 KiB of CHR
+				prgsize = filesize;
+				break;
+			}
+			case(24 KiB):
+			case(40 KiB):
+			case(72 KiB):
+			case(136 KiB):
+			case(264 KiB):
+			case(520 KiB):{
+				// 8 KiB of CHR
+				prgsize = filesize - 8 KiB;
+				break;
+			}
+			case(48 KiB):
+			case(80 KiB):
+			case(144 KiB):
+			case(272 KiB):
+			case(528 KiB):{
+				// 16 KiB CHR
+				prgsize = filesize - 16 KiB;
+				break;
+			}
+			case(96 KiB):
+			case(160 KiB):
+			case(288 KiB):
+			case(544 KiB):{
+				// 32 KiB CHR
+				prgsize = filesize - 32 KiB;
+				break;
+			}
+			case(192 KiB):
+			case(320 KiB):
+			case(572 KiB):{
+				// 64 KiB CHR
+				prgsize = filesize - 64 KiB;
+				break;
+			}
+			case(384 KiB):
+			case(640 KiB):{
+				// 128 KiB CHR
+				prgsize = filesize - 128 KiB;
+				break;
+			}
+			case(768 KiB):{
+				// 256 KiB CHR
+				prgsize = filesize - 256 KiB;
+				break;
+			}
+			case(1024 KiB):{
+				// 512 KiB
+				prgsize = filesize - 512 KiB;
+				break;
+			}
+			default:{
+				std::puts("Invalid file size.\a");
+				goto exit;
+			}
+		}
+
+	}
+	else{
+		// get PRG-ROM size
+		prgsize = ROM[4] * 16 KiB;
+
+		// account for iNES header size
+		headerstart = 0x10;
+	}
+
+	// validate size
+	if(filesize < prgsize){
+		std::puts("File size is smaller than program size.\a");
+		goto exit;
+	}
+
+	// set headerstart to start of Nyanko header
+	headerstart += prgsize - 0x30;
+
+	// check for NyankoStudios string
+	isNyankoHeader = (!std::memcmp(ROM + headerstart, "NyankoStudios", 13)) || (ROM[headerstart + 0x27] & 0x80);
+
+	// check if headerless
+	for(temp = 0; temp < 16; temp++){
+		switch(ROM[headerstart + 0x10 + temp]){
+			case(0x00):
+			case(0xFF):{
+				continue;
+			}
+		}
+		break;
+	}
+	if(temp == 16){
+		std::puts("ROM contains no header");
+		goto exit;
+	}
+
+	// force Nintendo or Nyanko header
+	if(argc > 2){
+		if(!std::strcmp(argv[2], "1")){
+			isNyankoHeader = 1;
+		}
+		else if(!std::strcmp(argv[2], "0")){
+			isNyankoHeader = 0;
+		}
+	}
+
+	// report back if NyankoHeader or not
+	if(isNyankoHeader){
+		std::puts("Nyanko Studios NES Header");
+	}
+	else{
+		std::puts("Nintendo Header");
+	}
+
+	//-----------------------------------------------------------------------
+
+	// display internal name
+	std::fputs("\nInternal Name: \"", stdout);
+	for(byte i = 0; i < 16; i++){
+		switch(ROM[headerstart + 0x10 + i]){
+			// \a	BEL	system alert sound
+			// \b	BS	backspace
+			// \t	HT	horizontal tab
+			// \b	LF	line feed (new line)
+			// \r	CR	carrage return
+			case(0x07):
+			case(0x08):
+			case(0x09):
+			case(0x0A):
+			case(0x0C):{
+				std::putchar(NULL);
+				break;
+			}
+			default:{
+				std::putchar(ROM[headerstart + 0x10 + i] /*ROM[headerstart + i]*/);
+			}
+		}
+	}
+	std::puts("\"");
+
+	// display PRG checksum
+	std::printf("PRG checksum:  $%.4X\n", *(word*)(ROM + headerstart + 0x20));
+
+	// display CHR checksum
+	std::printf("CHR checksum:  $%.4X\n", *(word*)(ROM + headerstart + 0x22));
+
+	// display PRG board size
+	switch((ROM[headerstart + 0x24] >> 4) & 0x07){
+		case(0):{
+			temp = 8;
+			break;
+		}
+		case(1):{
+			temp = 16;
+			break;
+		}
+		case(2):{
+			temp = 32;
+			break;
+		}
+		case(3):{
+			temp = 128;
+			break;
+		}
+		case(4):{
+			temp = 256;
+			break;
+		}
+		case(5):{
+			temp = 512;
+			break;
+		}
+		case(6):{
+			//if(isNyankoHeader){
+				temp = 1024;
+				break;
+			//}
+			/* continue onto default case */
+		}
+		default:{
+			temp = 0;
+		}
+	}
+	std::fputs("PRG Size:      ", stdout);
+	if(temp){
+		/*if(!isNyankoHeader && (ROM[headerstart + 0x24] & 0x80)){
+			goto badprgsize;
+		}*/
+		std::printf("%i KiB\n", temp);
+	}
+	else{
+//badprgsize:
+		std::puts("ERROR");
+	}
+
+	// display CHR board size
+	switch(ROM[headerstart + 0x24] & 0x07){
+		case(0):{
+			temp = 8;
+			break;
+		}
+		case(1):{
+			temp = 16;
+			break;
+		}
+		case(2):{
+			temp = 32;
+			break;
+		}
+		case(3):{
+			temp = 128;
+			break;
+		}
+		case(4):{
+			temp = 256;
+			break;
+		}
+		case(5):{
+			temp = 512;
+			break;
+		}
+		case(6):{
+			//if(isNyankoHeader){
+				temp = 1024;
+				break;
+			//}
+			/* continue onto default case */
+		}
+		default:{
+			temp = 0;
+		}
+	}
+	std::fputs("CHR Size:      ", stdout);
+	if(ROM[headerstart + 0x24] & 0x08){
+		std::fputs("(RAM) ", stdout);
+	}
+	if(temp){
+		std::printf("%i KiB\n", temp);
+	}
+	else{
+		std::puts("ERROR");
+	}
+
+	// display board type
+	std::fputs("Board type:    ", stdout);
+	if(!isNyankoHeader){
+		/*if((ROM[headerstart + 0x25] & 0x7F) > 4){
+			std::puts("ERROR");
+		}
+		else{*/
+			std::printf("%s\n", mappers[ROM[headerstart + 0x25] & 0x07]);
+		//}
+	}
+	else{
+		/*if(range(ROM[headerstart + 0x25], 0b01010, 0b11101)){
+			std::puts("ERROR");
+		}
+		else{*/
+			std::printf("%s\n", mappers[ROM[headerstart + 0x25]/* & 0x1F*/]);
+		//}
+	}
+
+	// display mirroring
+	std::printf("Mirroring:     %c\n", (ROM[headerstart + 0x25] & 0x80 ? 'V' : 'H'));
+
+	// display nyanko specific board type info
+	if(isNyankoHeader){
+		std::printf("PRG RAM:       %i\nBattery:       %i\nEXP Audio:     %i\n",
+			ROM[headerstart + 0x24] & 0x80, ROM[headerstart + 0x25] & 0x20, ROM[headerstart + 0x25] & 0x40);
+	}
+
+	temp = (ROM[headerstart + 0x27] + 1) & 0x0F;
+	// display title length
+	std::printf("Title length:  %i\n", temp ? temp : 0);
+
+	if(!isNyankoHeader){
+		// display title encoding
+		std::fputs("Title encoding: ", stdout);
+		switch(ROM[headerstart + 0x26]){
+			case(1):{
+				std::puts("ASCII");
+				break;
+			}
+			case(2):{
+				std::puts("other");
+				break;
+			}
+			case(0):{
+				std::puts("None");
+				break;
+			}
+			default:{
+				std::puts("ERROR");
+			}
+		}
+
+	}
+	else{
+		// display version
+		std::fputs("Version:       ", stdout);
+		if(ROM[headerstart + 0x26] == 0xFF){
+			std::puts("ERROR");
+		}
+		else{
+			std::printf("1.%i\n", ROM[headerstart + 0x26]);
+		}
+
+		// display build date
+		std::printf("Build date:    %i ", ROM[headerstart + 0x0D] + 1925);
+		switch(ROM[headerstart + 0x0E] & 0x0F){
+			case(1):{ temp = (uint32)(&"Jan"); break; }
+			case(2):{ temp = (uint32)(&"Feb"); break; }
+			case(3):{ temp = (uint32)(&"Mar"); break; }
+			case(4):{ temp = (uint32)(&"Apr"); break; }
+			case(5):{ temp = (uint32)(&"May"); break; }
+			case(6):{ temp = (uint32)(&"Jun"); break; }
+			case(7):{ temp = (uint32)(&"Jul"); break; }
+			case(8):{ temp = (uint32)(&"Aug"); break; }
+			case(9):{ temp = (uint32)(&"Sep"); break; }
+			case(10):{ temp = (uint32)(&"Oct"); break; }
+			case(11):{ temp = (uint32)(&"Nov"); break; }
+			case(12):{ temp = (uint32)(&"Dec"); break; }
+			default:{
+				temp = (uint32) & "???";
+			}
+		}
+		std::fputs((const char*)temp, stdout);
+		std::printf(" %.2i @ %.2i\n", ROM[headerstart + 0x0F] & 0x1F,
+			(ROM[headerstart + 0x0E] >> 4) | (ROM[headerstart + 0x0F] >> 1 & 0x30));
+	}
+
+	// display manufacturer
+	switch(ROM[headerstart + 0x28]){
+		// ignore type saftey, and use temp as a pointer
+		case(0x00):{ temp = (uint32)manufacturer[0]; break; }
+		case(0x01):{ temp = (uint32)manufacturer[1]; break; }
+		case(0x08):{ temp = (uint32)manufacturer[2]; break; }
+		case(0x0A):{ temp = (uint32)manufacturer[3]; break; }
+		case(0x18):{ temp = (uint32)manufacturer[4]; break; }
+		case(0x49):{ temp = (uint32)manufacturer[5]; break; }
+		case(0x4A):{ temp = (uint32)manufacturer[6]; break; }
+		case(0x8B):{ temp = (uint32)manufacturer[7]; break; }
+		case(0x99):{ temp = (uint32)manufacturer[8]; break; }
+		case(0x9B):{ temp = (uint32)manufacturer[9]; break; }
+		case(0x9C):{ temp = (uint32)manufacturer[10]; break; }
+		case(0xA2):{ temp = (uint32)manufacturer[11]; break; }
+		case(0xA4):{ temp = (uint32)manufacturer[12]; break; }
+		case(0xA6):{ temp = (uint32)manufacturer[13]; break; }
+		case(0xA7):{ temp = (uint32)manufacturer[14]; break; }
+		case(0xA8):{ temp = (uint32)manufacturer[15]; break; }
+		case(0xAC):{ temp = (uint32)manufacturer[16]; break; }
+		case(0xAF):{ temp = (uint32)manufacturer[17]; break; }
+		case(0xB1):{ temp = (uint32)manufacturer[18]; break; }
+		case(0xB2):{ temp = (uint32)manufacturer[19]; break; }
+		case(0xB3):{ temp = (uint32)manufacturer[20]; break; }
+		case(0xB6):{ temp = (uint32)manufacturer[21]; break; }
+		case(0xBB):{ temp = (uint32)manufacturer[22]; break; }
+		case(0xBC):{ temp = (uint32)manufacturer[23]; break; }
+		case(0xC0):{ temp = (uint32)manufacturer[24]; break; }
+		case(0xC1):{ temp = (uint32)manufacturer[25]; break; }
+		case(0xC2):{ temp = (uint32)manufacturer[26]; break; }
+		case(0xC3):{ temp = (uint32)manufacturer[27]; break; }
+		case(0xC4):{ temp = (uint32)manufacturer[28]; break; }
+		case(0xC5):{ temp = (uint32)manufacturer[29]; break; }
+		case(0xC6):{ temp = (uint32)manufacturer[30]; break; }
+		case(0xC7):{ temp = (uint32)manufacturer[31]; break; }
+		case(0xCA):{ temp = (uint32)manufacturer[32]; break; }
+		case(0xCB):{ temp = (uint32)manufacturer[33]; break; }
+		case(0xCC):{ temp = (uint32)manufacturer[34]; break; }
+		case(0xCE):{ temp = (uint32)manufacturer[35]; break; }
+		case(0xD1):{ temp = (uint32)manufacturer[36]; break; }
+		case(0xD2):{ temp = (uint32)manufacturer[37]; break; }
+		case(0xDB):{ temp = (uint32)manufacturer[38]; break; }
+		case(0xE7):{ temp = (uint32)manufacturer[39]; break; }
+		case(0xEB):{ temp = (uint32)manufacturer[40]; break; }
+
+		case(0x0F):{ temp = (uint32)manufacturer[41]; break; }	// Nyanko Studios
+		default:{
+				temp = (uint32)(&"ERROR");
+		}
+	}
+	std::printf("Developer:     %s\n", (char*)temp);
+
+	// display header byte
+	std::printf("Header Byte:   $%.2X\n", ROM[headerstart + 0x29]);
+#if 0
+	temp = 0;
+	for(byte i = 0x10; i < 0x29; i++){
+		temp += ROM[headerstart + i];
+	}
+	if((byte)temp){
+		std::puts("Header Invalid");
+	}
+#endif
+
+#if 0
+	// check checksum
+	for(uint32 i = 0; i < prgsize; i++){
+		// assume header sum = 0
+		/*if(range(i, prgsize, prgsize - 6)){
+			//continue;
+		}*/
+		checksumfull += ROM[i];
+		if(i > prgsize - 16 KiB){
+			checksum16 += ROM[i];
+		}
+	}
+	if(*(word*)(ROM + headerbyte + 0x20) != checksum16 && *(word*)(ROM + headerbyte + 0x20) != checksumfull){
+		
+	}
+#endif
+
+	// display raw header
+	for(byte i = (isNyankoHeader ? 0x00 : 0x10); i < 0x30; i++){
+		if((i % 16) == 0){
+			std::putchar('\n');
+		}
+		std::printf(" %.2X", ROM[headerstart + i]);
+	}
+	std::putchar('\n');
+
+	// display raw header as text
+	for(byte i = (isNyankoHeader ? 0x00 : 0x10); i < 0x30; i++){
+		if((i % 16) == 0){
+			std::putchar('\n');
+		}
+		switch(ROM[headerstart + i]){
+			// '\a' BEL	system alert sound
+			// '\b' BS	backspace
+			// '\t' HT	horizontal tab
+			// '\n' LF	line feed (new line)
+			// '\r' CR	carriage return
+			case(0x07):
+			case(0x08):
+			case(0x09):
+			case(0x0A):
+			case(0x0C):{
+				std::putchar(' ');	// use space for portability?
+				break;
+			}
+			default:{
+				std::putchar(ROM[headerstart + i]);
+			}
+		}
+	}
+
+
+exit:
+	if(ROM != NULL){
+		std::free(ROM);
+	}
+	if(romfile != NULL){
+		std::fclose(romfile);
+	}
+
+	// wait for user to terminate
+	(void)std::getchar();
+}
+
+</code></pre>
+
+			</section>
+		</div>
+		<script>
+			function langseljp(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
+			}
+		</script>
+	</body>
+</html>
+

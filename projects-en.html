@@ -5,9 +5,11 @@
 		<meta charset="UTF-8" />
 		<meta name="description" content="description content" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="author" content="Jason Cannon" />
 		<meta lang="en" />
 		<link rel="stylesheet" type="text/css" href="style-en.css"/>
-		
+		<link rel="icon" href="favicon.ico"/>
+
 		<style>
 			#toc {
 				width: 150px;
@@ -23,12 +25,30 @@
 				color: blue;
 				display: block;
 			}
-			a:hover#toc {
-				text-decoration: underline;
-			}
 			.toclist {
 				list-style-type: none;
+				margin-left: -20px;
 			}
+				.toclist a {
+					text-decoration: none;
+				}
+				.toclist a:hover {
+					text-decoration: underline;
+				}
+			.category{
+				/*margin-bottom: -2px;
+				margin-top: -2px;*/
+				margin-left: -16px;
+			}
+				.category li {
+					margin-left: 16px;
+				}
+				.category a {
+					text-decoration: none;
+				}
+				.category a:hover {
+					text-decoration: underline;
+				}
 		</style>
 	</head>
 	<body>
@@ -60,11 +80,21 @@
 						<li>
 							<a href="#NES">1 NES</a>
 							<ul class="toclist">
-								<li hidden><a href="#NES_games">1.1 Games</a></li>
-								<li hidden><a href="#NES_utility">1.2 Utility</a></li>
+								<li><a href="#NES_games">1.1 Games</a></li>
+								<li><a href="#NES_demo">1.2 Demos</a></li>
+								<li><a href="#NES_music">1.3 Music</a></li>
+								<li hidden><a href="#NES_utility">1.4 Utility</a></li>
 							</ul>
 						</li>
-						<li><a href="#SNES">2 SNES</a></li>
+						<li>
+							<a href="#SNES">2 SNES</a>
+							<ul class="toclist">
+								<li hidden><a href="#SNES_games">2.1 Games</a></li>
+								<li hidden><a href="#SNES_demo">2.2 Demos</a></li>
+								<li hidden><a href="#SNES_utility">2.3 Music</a></li>
+								<li hidden><a href="#SNES_utility">2.4 Utility</a></li>
+							</ul>
+						</li>
 						<li>
 							<a href="#TI-8x">3 TI-8x Calculator</a>
 							<ul class="toclist">
@@ -72,26 +102,50 @@
 								<li><a href="#TI-8x_utility">3.2 Utility</a></li>
 							</ul>
 						</li>
-						<li><a href="#Windows">4 Windows</a></li>
+						<li>
+							<a href="#Windows">4 Windows</a>
+							<ul class="toclist">
+								<li><a href="#Windows_utility">4.1 Utility</a></li>
+								<li><a href="#Windows_emulation">4.2 Emulation</a></li>
+							</ul>
+						</li>
 					</ul>
 				</div>
 
 				<h3 id="NES">NES</h3>
-				<ul>
-					<li><a href="projects/NES/Minesweeper-en.html">Minesweeper</a></li>
-					<li><a href="projects/NES/RoyalGameUr-en.html">The Royal Game of Ur</a></li>
+				<ul class="category">
+					<li id="NES_games" style="margin-left: 0px"><b>Games</b></li>
+					<li><a href="projects/NES/games/Pong-en.html">Pong</a></li>
+					<li><a href="projects/NES/games/Minesweeper-en.html">Minesweeper</a></li>
+					<li hidden><a href="projects/NES/games/RoyalGameUr-en.html">The Royal Game of Ur</a></li>
+					<li hidden><a href="projects/NES/games/Biplanes-en.html">Biplanes</a></li>
+
+					<li id="NES_demo" style="margin: 0px"><b>Demos</b></li>
+					<li><a href="projects/NES/demos/MMC3MemoryView-en.html">Memory Viewer</a></li>
+					<li><a href="projects/NES/demos/CrashHandler-en.html">Crash Handler</a></li>
+
+					<li id="NES_music" style="margin: 0px"><b>Music</b></li>
+					<li><a href="projects/NES/music/NyanCat-en.html">Nyan Cat Animation</a></li>
+					<li><a href="projects/NES/music/UndertaleHeartache-en.html">Undertale Heartache</a></li>
+					<li><a href="projects/NES/music/UndertaleIntro-en.html">Undertale Intro</a></li>
 				</ul>
 
 				<h3 id="SNES">SNES</h3>
-				<ul></ul>
+				<ul class="category">
+					<li hidden id="SNES_games" style="margin-left: 0px"><b>Games</b></li>
+					<li hidden id="SNES_demo" style="margin-left: 0px"><b>Demos</b></li>
+					<li hidden id="SNES_music" style="margin-left: 0px"><b>Music</b></li>
+					<li hidden id="SNES_utility" style="margin-left: 0px"><b>Utility</b></li>
+					
+					<li>This system does not have any projects developed for it yet.</li>
+				</ul>
 
 				<h3 id="TI-8x">TI-8x Calculator</h3>
-				<h4 id="TI-8x_games">Games</h4>
-				<ul>
+				<ul class="category">
+					<li id="TI-8x_games" style="margin-left: 0px"><b>Games</b></li>
 					<li><a href="projects/TI/PACMAN-en.html">TI-PACMAN</a></li>
-				</ul>
-				<h4 id="TI-8x_utility">Utility</h4>
-				<ul>
+
+					<li id="TI-8x_utility" style="margin-left: 0px"><b>Utility</b></a></li>
 					<li><a href="projects/TI/PolyDiv-en.html">Polynomial Division Calculator</a></li>
 					<li><a href="projects/TI/isPrime-en.html">isPrime</a></li>
 					<li><a href="projects/TI/ModDiv-en.html">Modulus Division (Remainder)</a></li>
@@ -99,9 +153,17 @@
 				</ul>
 
 				<h3 id="Windows">Windows</h3>
-				<ul>
+				<ul class="category">
+					<li id="Windows_utility" style="margin-left: 0px"><b>Utility</b></li>
 					<li><a href="projects/Windows/PolynomialDiv-en.html">Polynomial Divider</a></li>
 					<li><a href="projects/Windows/MetroidPass-en.html">Metroid Password Parser</a></li>
+					<li><a href="projects/Windows/WaveViewer-en.html">Wave Viewer</a></li>
+					<li><a href="projects/Windows/DPCM_Editor-en.html">DPCM Editor</a></li>
+
+					<li id="Windows_emulation" style="margin-left: 0px"><b>Emulation</b></li>
+					<li><a href="projects/Windows/asm6_ext-en.html">asm6_ext Assembler</a></li>
+					<li><a href="projects/Windows/VirtuaNES_ext-en.html">VirtuaNES_ext Emulator</a></li>
+					<li><a href="projects/Windows/asm16_ext-en.html">asm16_ext 65c816 Assembler</a></li>
 				</ul>
 
 			</section>

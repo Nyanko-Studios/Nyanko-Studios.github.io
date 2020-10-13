@@ -1,0 +1,67 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Nyanko Studios NES Crash Handler" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="author" content="Jason Cannon" />
+		<meta lang="en" />
+		<link rel="stylesheet" type="text/css" href="../../../style-en.css"/>
+		<style>
+			code {
+				background-color: #EFEFEF;
+			}
+			.pgm {
+				color: #0000FF;
+			}
+			.num {
+				color: #FF8000;
+			}
+			.rem {
+				color: #008000;
+			}
+			.dir {
+				color: #408080;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="../../../about-en.html">About</a></li>
+				<li><a href="../../../projects-en.html">Projects</a></li>
+				<li><a href="../../../team-en.html">Team</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langseljp()"><ruby>日本語<rt hidden="hidden">にほんご</rt></ruby></button>
+			</div>
+			<section class="mainbody">
+				<h1 style="margin-bottom: 0px; font: 24px Arial;">NES Crash Handler</h1>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>Error:</b> JavaScript is been diabled.
+					</h1><hr />
+				</noscript>
+				<p>
+					<b>Platform:</b> Nintendo Entertainment System<br />
+					<b>Version:</b> 2.7.2<br />
+					<b>Release Date:</b> 2020-07-25
+				</p>
+				<p>
+					This program is a custom crash handler for software running on the Nintendo Entertainment System. It displays various information about the state of the processor at the time of the crash. This program is intended for debugging NES software, and is run when a <code class="pgm">BRK</code> instruction is executed. The signiture byte of the <code class="pgm">BRK</code> instruction is used as the crash ID number. Each revision of this program seeks to bring the its size down.<br />
+					The size of crash handler version 2.7.2 is 424 bytes (down from the original 544 bytes).
+				</p>
+			</section>
+		</div>
+		<script>
+			function langseljp(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
+			}
+		</script>
+	</body>
+</html>

@@ -6,18 +6,34 @@
 		<meta name="description" content="description content" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta lang="en" />
+		<!-- 404.html req <base> tag for links to work in folders -->
+		<base href="https://nyanko-studios.github.io" />
 		<link rel="stylesheet" type="text/css" href="style-en.css"/>
+		
 	</head>
 	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-en.html">About</a></li>
+				<li><a href="projects-en.html">Projects</a></li>
+				<li><a href="team-en.html">Team</a></li>
+			</ul>
+		</div>
 		<div class="main">
 			<section class="mainbody">
 				<h2 style="margin-bottom: 0px; font: 24px Arial;">404: Page not found</h2>
-				<p>We can't seem to find this page, most likely because our resident cat programmer is lazy.</p>
-				<p>Make sure that the link is correct, and in the meantime, we'll wake up our programmers to check for a problem.</p>
+				<p>We can't seem to find this page. Please note that this site is currently under construction.</p>
+				<p>Make sure that the link is correct.</p>
 				
 			</section>
 		</div>
-		<script></script>
+		<script>
+			// this code is for testing
+			if(location.protocol != "https:") {
+				document.head.childNodes[11].href = "J:/Website/404.html";
+			}
+			//
+		</script>
 	</body>
 </html>
 
