@@ -1615,7 +1615,7 @@ delete Prism.languages.c['boolean'];
 		},
 		'operator': />>=?|<<=?|->|([-+&|:])\1|[?:~]|<=>|[-+*/%&|^!=<>]=?|\b(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)\b/,
 		'boolean': /\b(?:true|false)\b/,
-		'cmacro': /NULL|SEEK_CUR|SEEK_END|SEEK_SET|stdin|stdout|stderr/
+		'cmacro': /NULL|SEEK_CUR|SEEK_END|SEEK_SET|stdin|stdout|stderr|_CRT_SECURE_NO_WARNINGS/
 	});
 
 	Prism.languages.insertBefore('cpp', 'string', {

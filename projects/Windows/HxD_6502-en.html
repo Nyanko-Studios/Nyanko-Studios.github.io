@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<htmllang="en">
+<html lang="en">
 	<head>
 		<title>Nyanko Studios</title>
 		<meta charset="utf-8" />
@@ -20,7 +20,7 @@
 				<button type="button" class="langbutton" onclick="langseljp()"><ruby>日本語<rt hidden="hidden">にほんご</rt></ruby></button>
 			</div>
 			<section class="mainbody">
-				<h1 style="margin-bottom: 0px; font: 24px Arial;">MODDIV</h1>
+				<h1 style="margin-bottom: 0px; font: 24px Arial;">PROGRAM NAME</h1>
 				<hr />
 				<noscript>
 					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
@@ -28,35 +28,26 @@
 					</h1><hr />
 				</noscript>
 				<p>
-					<b>Platform:</b> TI-8x<br />
-					<b>Version:</b> 1.0<br />
-					<b>Release Date:</b> 2018
+					<b>Platform:</b> Windows<br />
+					<b>Version:</b> 2.1<br />
+					<b>Release Date:</b> 2020-06-30
 				</p>
 				<p>
-					This program preforms modulus division, which returns the remainder of a division. The TI-83 lacks this function, and the TI-83+ and TI-84+ only work on positive numbers. This program contains a simple formula that works with any number, regardless of sign. The strange formating of the code has the purpose of saving reducing program size and speeding up excecution.
+					This is a plugin for the program HxD. HxD is a fast hex-editor program, with the ability to quickly open and edit files well over 8192 GiB, RAM, and disk-drives. This plugin adds 6502 assembly support to HxD's "data inspector," with the ability to edit. Selecting "Show integers in hexadecimal base" enables the showing of "illegal" or "undocumented" opcodes. At this time, the plugin is compatible only with the 64-bit version of HxD.
 				</p>
-				<hr/>
-				<h3>Code</h3>
 				<p>
-					<ol>
-						<li>
-							<code><span style="color:#0000FF">Prompt</span>&nbsp;<span style="color:#1F7FFF">A</span>,<span style="color:#1F7FFF">B</span></code>
-						</li>
-						<li>
-							<code><span style="color:#1F7FFF">A</span>-<span style="color:#1F7FFF">B</span><span style="color:#BF00BF">int(</span><span style="color:#1F7FFF">A</span>/<span style="color:#1F7FFF">B</span></code>
-						</li>
-					</ol>
+					Note: This page is not sponsored by the creator of HxD. HxD is just a great program.
+				</p>
+				<p>
+					<a href="https://mh-nexus.de/en/hxd/">Official HxD download</a>
 				</p>
 			</section>
 		</div>
 		<script>
-			/*if(location.protocol != "https:") {
-				document.head.childNodes[11].href = "J:/Website/style-en.html";
-			}*/
 			function langseljp(){
 				history.pushState(null, "", document.URL);
 				window.location.replace(document.URL.replace("-en.html", "-jp.html"));
 			}
 		</script>
 	</body>
-</htmllang="en">
+</html>

@@ -1,43 +1,57 @@
-<!--<meta http-equiv="refresh" content="0; URL='about-en.html'" />-->
-<script>
-	// go to page based on language setting.
-	// if language is not supported, display
-	//		error in native language
-	// if no error for language, display
-	//		error in English
-	switch(navigator.language.substr(0, 2)) {
-		case ("en"): {
-			window.location.replace("about-en.html");
-			break;
-		}
-		case ("ja"): {
-			window.location.replace("about-jp.html");
-			break;
-		}
-		case ("fr"): {
-			alert("Le français n'est pas pris en charge. Vous serez dirigé vers la page en anglais.");
-			window.location.replace("about-en.html");
-			break;
-		}
-		case ("it"): {
-			alert("L'italiano non è supportato. Verrai reindirizzato alla pagina inglese.");
-			window.location.replace("about-en.html");
-			break;
-		}
-		case ("de"): {
-			alert("Deutsch wird nicht unterstützt. Sie werden auf die englische Website weitergeleitet.");
-			window.location.replace("about-en.html");
-			break;
-		}
-		case ("es"): {
-			alert("El español no es compatible. Será dirigido a la página en inglés.");
-			window.location.replace("about-en.html");
-			break;
-		}
-		default: {
-			alert("Your language is not supported. You will be directed to the English page.");
-			window.location.replace("about-en.html");
-			break;
-		}
-	}
-</script>
+ï»¿<!doctype html>
+<html lang="mul">
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="utf-8" />
+		<meta name="google-site-verification" content="BdZ2insL3mXx6F7cO8TdFIMMY_wjIXDBSzvgmeWrDU8" />
+		<meta name="description" content="Nyanko Studios is a multi-platform indipendent software group." />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script>
+			// go to page based on language setting.
+			// if language is not supported, display
+			//		error in native language
+			// if no error for language, display
+			//		error in English
+			switch(navigator.language.substr(0, 2)) {
+				case ("en"):{
+					window.location.replace("about-en.html");
+					break;
+				}
+				case ("ja"):{
+					window.location.replace("about-jp.html");
+					break;
+				}
+				case ("fr"):{
+					alert("Le franÃ§ais n'est pas pris en charge. Vous serez dirigÃ© vers la page en anglais.");
+					window.location.replace("about-en.html");
+					break;
+				}
+				case ("it"):{
+					alert("L'italiano non Ã¨ supportato. Verrai reindirizzato alla pagina inglese.");
+					window.location.replace("about-en.html");
+					break;
+				}
+				case ("de"):{
+					alert("Deutsch wird nicht unterstÃ¼tzt. Sie werden auf die englische Website weitergeleitet.");
+					window.location.replace("about-en.html");
+					break;
+				}
+				case ("es"):{
+					alert("El espaÃ±ol no es compatible. SerÃ¡ dirigido a la pÃ¡gina en inglÃ©s.");
+					window.location.replace("about-en.html");
+					break;
+				}
+				default:{
+					alert("Your language is not supported. You will be directed to the English page.");
+					window.location.replace("about-en.html");
+					break;
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Nyanko Studios</h1>
+		<p><a href="https://nyanko-studios.github.io/about-en.html">English</a></p>
+		<p><a href="https://nyanko-studios.github.io/about-jp.html">æ—¥æœ¬èªž</a></p>
+	</body>
+</html>
