@@ -1,0 +1,167 @@
+﻿<!doctype html>
+<html lang="ja">
+	<head>
+		<title>Nyanko Studios</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="description content" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="style-jp.css"/>
+
+		<style>
+			.toclist {
+				list-style-type: none;
+				margin-left: -20px;
+			}
+				.toclist a {
+					text-decoration: none;
+				}
+				.toclist a:hover {
+					text-decoration: underline;
+				}
+			.category{
+				/*margin-bottom: -2px;
+				margin-top: -2px;*/
+				margin-left: -16px;
+			}
+				.category li {
+					margin-left: 16px;
+				}
+				.category a {
+					text-decoration: none;
+				}
+				.category a:hover {
+					text-decoration: underline;
+				}
+		</style>
+	</head>
+	<body>
+		<div class="sidebar">
+			<ul class="stdlist">
+				<li><a href="about-jp.html">Nyanko Studiosについて</a></li>
+				<li><a href="projects-jp.html">プロジェクト</a></li>
+				<li><a href="team-jp.html">チーム</a></li>
+			</ul>
+		</div>
+		<div class="sidebar" style="top: 106px; font: 12px Arial; line-height: 0px">
+			<h4 style="text-align: center">目次</h4>
+			<ul class="toclist">
+				<li>
+					<a href="#NES">1 ファミコン</a>
+					<ul class="toclist">
+						<li><a href="#NES_games">1.1 ゲーム</a></li>
+						<li><a href="#NES_demo">1.2 デモ</a></li>
+						<li><a href="#NES_music">1.3 音楽</a></li>
+						<li hidden><a href="#NES_utility">1.4 ユーティリティ</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#SNES">2 スーパーファミコン</a>
+					<ul class="toclist">
+						<li hidden><a href="#SNES_games">2.1 ゲーム</a></li>
+						<li hidden><a href="#SNES_demo">2.2 デモ</a></li>
+						<li hidden><a href="#SNES_utility">2.3 音楽</a></li>
+						<li hidden><a href="#SNES_utility">2.4 ユーティリティ</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#TI-8x">3 TI-8xグラフ電卓</a>
+					<ul class="toclist">
+						<li><a href="#TI-8x_games">3.1 ゲーム</a></li>
+						<li><a href="#TI-8x_utility">3.2 ユーティリティ</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#Windows">4 ウィンドウズ</a>
+					<ul class="toclist">
+						<li><a href="#Windows_utility">4.1 ユーティリティ</a></li>
+						<li><a href="#Windows_plugins">4.2 プラグイン</a></li>
+						<li><a href="#Windows_emulation">4.3 エミュレータ</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="main">
+			<div>
+				<button type="button" class="langbutton" onclick="langselen()">English</button>
+			</div>
+			<section class="mainbody">
+				<h2 style="margin-bottom: 0px; font: 24px Arial;">ソフトウェア</h2>
+				<hr />
+				<noscript>
+					<h1 style="color: #3F0000; background-color: #FF0000; padding: 3px 7px; text-align: center">
+						<b>エラー：</b> JavaScriptが無効になっています
+					</h1><hr />
+				</noscript>
+
+				<p>このページには、NyankoStudiosによって作成されたさまざまなソフトウェアのリストが含まれています</p>
+
+				<h3 id="NES">ファミコン</h3>
+				<ul class="category">
+					<li id="NES_games" style="margin-left: 0px"><b>ゲーム</b></li>
+					<li><a href="projects/NES/games/Pong-jp.html">ポン</a></li>
+					<li><a href="projects/NES/games/Minesweeper-jp.html">マインスイーパ</a></li>
+					<li hidden><a href="projects/NES/games/RoyalGameUr-jp.html">ウル王朝のゲーム</a></li>
+					<li hidden><a href="projects/NES/games/Biplanes-jp.html">バイプレインズ</a></li>
+
+					<li id="NES_demo" style="margin: 0px"><b>デモ</b></li>
+					<li><a href="projects/NES/demos/MMC3MemoryView-jp.html">メモリビューア</a></li>
+					<li><a href="projects/NES/demos/CrashHandler-jp.html">クラッシュハンドラー</a></li>
+
+					<li id="NES_music" style="margin: 0px"><b>音楽</b></li>
+					<li><a href="projects/NES/music/NyanCat-jp.html">Nyan Cat アニメーション</a></li>
+					<li><a href="projects/NES/music/UndertaleHeartache-jp.html">Undertale Heartache</a></li>
+					<li><a href="projects/NES/music/UndertaleIntro-jp.html">Undertale イントロ</a></li>
+				</ul>
+
+				<h3 id="SNES">スーパーファミコン</h3>
+				<ul class="category">
+					<li hidden id="SNES_games" style="margin-left: 0px"><b>Games</b></li>
+					<li hidden id="SNES_demo" style="margin-left: 0px"><b>Demos</b></li>
+					<li hidden id="SNES_music" style="margin-left: 0px"><b>音楽</b></li>
+					<li hidden id="SNES_utility" style="margin-left: 0px"><b>Utility</b></li>
+					
+					<li>このシステムのプロジェクトはまだ開発されていません</li>
+				</ul>
+
+				<h3 id="TI-8x">TI-8xグラフ電卓</h3>
+				<ul class="category">
+					<li id="TI-8x_games" style="margin-left: 0px"><b>ゲーム</b></li>
+					<li><a href="projects/TI/PACMAN-jp.html">TI-パックマン</a></li>
+
+					<li id="TI-8x_utility" style="margin-left: 0px"><b>ユーティリティ</b></li>
+					<li><a href="projects/TI/PolyDiv-jp.html">多項式除算計算機</a></li>
+					<li><a href="projects/TI/isPrime-jp.html">isPrime</a></li>
+					<li><a href="projects/TI/ModDiv-jp.html">モジュラス部（残り）</a></li>
+					<li><a href="projects/TI/initSys-jp.html">Set System Settings</a></li>
+				</ul>
+
+				<h3 id="Windows">ウィンドウズ</h3>
+				<ul class="category">
+					<li id="Windows_utility" style="margin-left: 0px"><b>ユーティリティ</b></li>
+					<li><a href="projects/Windows/PolynomialDiv-jp.html">多項式除算器</a></li>
+					<li><a href="projects/Windows/MetroidPass-jp.html">メトロイドパスワードパーサー</a></li>
+					<li><a href="projects/Windows/WaveViewer-jp.html">Wave Viewer</a></li>
+					<li><a href="projects/Windows/DPCM_Editor-jp.html">DPCM Editor</a></li>
+
+					<li id="Windows_plugins" style="margin-left: 0px"><b>プラグイン</b></li>
+					<li><a href="projects/Windows/HxD_6502-jp.html">6502 HxD Data Viewer Plugin</a></li>
+					<li><a href="projects/Windows/HxD_65c816-jp.html">65c816 HxD Data Viewer Plugin</a></li>
+
+					<li id="Windows_emulation" style="margin-left: 0px"><b>エミュレータ</b></li>
+					<li><a href="projects/Windows/asm6_ext-jp.html">asm6_ext Assembler</a></li>
+					<li><a href="projects/Windows/VirtuaNES_ext-jp.html">VirtuaNES_ext Emulator</a></li>
+					<li><a href="projects/Windows/asm16_ext-jp.html">asm16_ext 65c816 Assembler</a></li>
+					<li><a href="projects/Windows/NES_Header-jp.html">Nintendo Header Viewer (NES)</a></li>
+				</ul>
+
+			</section>
+		</div>
+		<script>
+			function langselen(){
+				history.pushState(null, "", document.URL);
+				window.location.replace(document.URL.replace("-jp.html", "-en.html"));
+			}
+		</script>
+	</body>
+</html>
+

@@ -1,0 +1,42 @@
+J:\Website\debug.log
+J:\Website\sitemap.bat
+J:\Website\style-en.css
+J:\Website\projects-en.html
+J:\Website\projects
+J:\Website\.vs
+J:\Website\style-jp.css
+J:\Website\about-en.html
+J:\Website\team-en.html
+J:\Website\index.html
+J:\Website\404.html
+J:\Website\prism.js
+J:\Website\prism.css
+J:\Website\test2.html
+J:\Website\test.html
+J:\Website\sitemap_tree.txt
+J:\Website\_template pages
+J:\Website\about-jp.html
+J:\Website\sitemap_dir.txt
+J:\Website\projects-jp.html
+J:\Website\projects\NES
+J:\Website\projects\TI
+J:\Website\projects\Windows
+J:\Website\projects\SNES
+J:\Website\projects\NES\demos
+J:\Website\projects\NES\demos\CrashHandler-en.html
+J:\Website\projects\TI\PACMAN-jp.html
+J:\Website\projects\TI\isPrime-en.html
+J:\Website\projects\TI\PACMAN-en.html
+J:\Website\projects\TI\TI-PACMAN-en.zip
+J:\Website\projects\TI\ModDiv-en.html
+J:\Website\projects\TI\isPrime-jp.html
+J:\Website\projects\Windows\HxD_6502-en.html
+J:\Website\.vs\ProjectSettings.json
+J:\Website\.vs\slnx.sqlite
+J:\Website\.vs\VSWorkspaceState.json
+J:\Website\.vs\Website
+J:\Website\.vs\Website\v16
+J:\Website\_template pages\PROJECT_TEMPLATE_PAGE-en.html
+J:\Website\_template pages\PROJECT_TEMPLATE_PAGE-jp.html
+J:\Website\_template pages\MAIN_TEMPLATE_PAGE-jp.html
+J:\Website\_template pages\MAIN_TEMPLATE_PAGE-en.html

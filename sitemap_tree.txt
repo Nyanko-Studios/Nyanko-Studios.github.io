@@ -1,0 +1,51 @@
+Folder PATH listing for volume CANNON_J_11
+Volume serial number is F0E9-AB13
+J:.
+|   debug.log
+|   sitemap.bat
+|   style-en.css
+|   projects-en.html
+|   style-jp.css
+|   about-en.html
+|   team-en.html
+|   index.html
+|   404.html
+|   prism.js
+|   prism.css
+|   test2.html
+|   test.html
+|   sitemap_tree.txt
+|   about-jp.html
+|   sitemap_dir.txt
+|   projects-jp.html
+|   
++---projects
+|   +---NES
+|   |   \---demos
+|   |           CrashHandler-en.html
+|   |           
+|   +---TI
+|   |       PACMAN-jp.html
+|   |       isPrime-en.html
+|   |       PACMAN-en.html
+|   |       TI-PACMAN-en.zip
+|   |       ModDiv-en.html
+|   |       isPrime-jp.html
+|   |       
+|   +---Windows
+|   |       HxD_6502-en.html
+|   |       
+|   \---SNES
++---.vs
+|   |   ProjectSettings.json
+|   |   slnx.sqlite
+|   |   VSWorkspaceState.json
+|   |   
+|   \---Website
+|       \---v16
+\---_template pages
+        PROJECT_TEMPLATE_PAGE-en.html
+        PROJECT_TEMPLATE_PAGE-jp.html
+        MAIN_TEMPLATE_PAGE-jp.html
+        MAIN_TEMPLATE_PAGE-en.html
+        
