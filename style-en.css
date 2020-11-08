@@ -4,10 +4,8 @@
 	z-index: 1;
 	left: 0px;
 	background-color: #F8F8F8;
-	padding-top: 0px;
 	border: 1px solid grey;
 	border-left: 0px;
-	line-height: normal;
 }
 
 .sidebar a {
